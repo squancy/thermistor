@@ -24,6 +24,14 @@ void takeSamples(int limit, int *arr, int tpin) {
     delay(10);
   }
 }
+
+float calcAverage(int limit, int *arr) {
+  float average = 0;
+  for (int i = 0; i < limit; i++) {
+    average += arr[i];
+  } 
+  return average / limit;
+}
  
 void setup(void) {
   Serial.begin(9600);
@@ -38,11 +46,7 @@ void loop(void) {
   takeSamples(NUMSAMPLES, samples, THERMISTORPIN);
   
   // average all the samples out
-  average = 0;
-  for (i=0; i< NUMSAMPLES; i++) {
-     average += samples[i];
-  }
-  average /= NUMSAMPLES;
+  average = calcAverage(NUMSAMPLES, samples);
  
   Serial.print("Average analog reading "); 
   Serial.println(average);
