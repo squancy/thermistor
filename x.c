@@ -30,33 +30,21 @@ float calcAverage(int limit, int *arr) {
   for (int i = 0; i < limit; i++) {
     average += arr[i];
   } 
-  return average / limit;
-}
- 
-void setup(void) {
-  Serial.begin(9600);
-  analogReference(EXTERNAL);
-}
- 
-void loop(void) {
-  uint8_t i;
-  float average;
- 
-  // take N samples in a row, with a slight delay
-  takeSamples(NUMSAMPLES, samples, THERMISTORPIN);
-  
-  // average all the samples out
-  average = calcAverage(NUMSAMPLES, samples);
- 
+    
+  average /= limit;
   Serial.print("Average analog reading "); 
   Serial.println(average);
-  
+
   // convert the value to resistance
   average = 1023 / average - 1;
   average = SERIESRESISTOR / average;
   Serial.print("Thermistor resistance "); 
   Serial.println(average);
-  
+
+  return average;
+}
+
+float calcSteinhart(int average) {
   float steinhart;
   steinhart = average / THERMISTORNOMINAL;     // (R/Ro)
   steinhart = log(steinhart);                  // ln(R/Ro)
@@ -68,6 +56,27 @@ void loop(void) {
   Serial.print("Temperature "); 
   Serial.print(steinhart);
   Serial.println(" *C");
+  
+  return steinhart;
+}
+ 
+void setup(void) {
+  Serial.begin(9600);
+  analogReference(EXTERNAL);
+}
+
+void loop(void) {
+  uint8_t i;
+  float average;
+  float steinhart;
+ 
+  // take N samples in a row, with a slight delay
+  takeSamples(NUMSAMPLES, samples, THERMISTORPIN);
+  
+  // average all the samples out
+  average = calcAverage(NUMSAMPLES, samples);
+    
+  steinhart = calcSteinhart(average);
   
   delay(1000);
 }
