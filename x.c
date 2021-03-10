@@ -44,7 +44,7 @@ float calcAverage(int limit, int *arr) {
   return average;
 }
 
-float calcSteinhart(int average) {
+float calcSteinhart(float average) {
   float steinhart;
   steinhart = average / THERMISTORNOMINAL;     // (R/Ro)
   steinhart = log(steinhart);                  // ln(R/Ro)
