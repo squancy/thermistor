@@ -1,19 +1,18 @@
-// Thermistor Example #3 from the Adafruit Learning System guide on Thermistors 
-// https://learn.adafruit.com/thermistor/overview by Limor Fried, Adafruit Industries
-// MIT License - please keep attribution and consider buying parts from Adafruit
- 
-// which analog pin to connect
-#define THERMISTORPIN A0         
-// resistance at 25 degrees C
+// Analog pins for thermistors
+#define PIN1 A0
+#define PIN2 A1
+
+// Resistance at 25 degrees C
 #define THERMISTORNOMINAL 10000      
-// temp. for nominal resistance (almost always 25 C)
+
+// Temp. for nominal resistance (almost always 25 C)
 #define TEMPERATURENOMINAL 25   
-// how many samples to take and average, more takes longer
-// but is more 'smooth'
 #define NUMSAMPLES 5
+
 // The beta coefficient of the thermistor (usually 3000-4000)
 #define BCOEFFICIENT 3950
-// the value of the 'other' resistor
+
+// The value of the 'other' resistor
 #define SERIESRESISTOR 10000    
  
 int samples[NUMSAMPLES];
@@ -59,6 +58,19 @@ float calcSteinhart(float average) {
   
   return steinhart;
 }
+
+void measureThermistor(int pin) {
+  float average;
+  float steinhart;
+ 
+  // take N samples in a row, with a slight delay
+  takeSamples(NUMSAMPLES, samples, pin);
+  
+  // average all the samples out
+  average = calcAverage(NUMSAMPLES, samples);
+    
+  steinhart = calcSteinhart(average);
+}
  
 void setup(void) {
   Serial.begin(9600);
@@ -66,17 +78,8 @@ void setup(void) {
 }
 
 void loop(void) {
-  uint8_t i;
-  float average;
-  float steinhart;
- 
-  // take N samples in a row, with a slight delay
-  takeSamples(NUMSAMPLES, samples, THERMISTORPIN);
-  
-  // average all the samples out
-  average = calcAverage(NUMSAMPLES, samples);
-    
-  steinhart = calcSteinhart(average);
-  
+  measureThermistor(PIN1);
+  measureThermistor(PIN2);
+
   delay(1000);
 }
