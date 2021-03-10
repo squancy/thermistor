@@ -40,9 +40,9 @@ void setup(void) {
 }
 
 // Takes [limit] number of samples with 10ms delays
-void takeSamples(int limit, int *arr) {
+void takeSamples(int limit, int *arr, int tpin) {
   for (int i = 0; i < limit; i++) {
-   arr[i] = analogRead(THERMISTORPIN);
+   arr[i] = analogRead(tpin);
    delay(10);
   }
 }
@@ -54,8 +54,8 @@ void loop(void) {
   float average2;
  
   // take N samples in a row, with a slight delay
-  takeSamples(NUMSAMPLES, samples);
-  takeSamples(NUMSAMPLES, samples2);
+  takeSamples(NUMSAMPLES, samples, THERMISTORPIN);
+  takeSamples(NUMSAMPLES, samples2, THERMISTORPIN2);
   
   // average all the samples out
   average = 0;
